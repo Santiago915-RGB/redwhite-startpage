@@ -5,8 +5,15 @@
 }
 
 :root {
-  --main-color: #f00;
+  --accent-color-hue: 0;
+  --accent-color-hue: 142;
+  --accent-color: hsl(var(--accent-color-hue), 100%, 50%);
+  --accent-colorDark: hsl(var(--accent-color-hue), 100%, 25%);
+  --accent-gradient: linear-gradient(var(--accent-color), var(--accent-colorDark));
+
+
   --main-white: #ffffff;
+  --main-white: #000;
   --seco-white: #c0c0c0;
   --main-gradient: linear-gradient(var(--main-white), var(--seco-white));
   
@@ -23,9 +30,7 @@
 
 
 
-  --tertiary: linear-gradient(to left,
-  rgb(var(--testvalue), var(--testvalue), var(--testvalue)),
-  rgb(calc(var(--testvalue) - 64), calc(var(--testvalue) - 64), calc(var(--testvalue) - 64)));
+  --tertiary: linear-gradient(to left, rgb(var(--testvalue), var(--testvalue), var(--testvalue)), rgb(calc(var(--testvalue) - 64), calc(var(--testvalue) - 64), calc(var(--testvalue) - 64)));
 
 
 
@@ -35,7 +40,7 @@
 }
 
 body {
-	background: url(media/monn.png), black;
+	background: url(media/omega4.png), black;
 	font-family: 'Monaco 9';
 	font-size: 16px;
 	height: 100vh;
@@ -43,14 +48,14 @@ body {
 	padding: 0px;
 }
 a, body {
-  color: var(--main-color);
+  color: var(--accent-color);
 }
 a {
   text-decoration: none;
 }
 *::selection {
   color: var(--main-white);
-  background: var(--main-color);
+  background: var(--accent-color);
 }
 .main  {
 	width: 451px;
@@ -59,7 +64,7 @@ a {
 	top: 50%;
     left: 50%;
     transform: translate(-49.9%, -50%);
-	box-shadow: 2px 2px 1px black;
+	box-shadow: 20px 20px 1px #00000080;
 }
 .th, .japo {
 	font-family: 'Mona12';
@@ -104,8 +109,8 @@ ul {
   flex-direction: column;
 }
 .clock-widget {
-  background: linear-gradient(#f00, #800000);
-  border: 1px solid #800000;
+  background: var(--accent-gradient);
+  border: 1px solid var(--accent-gradientDark);
   color: #fff;
 }
 .clock-widget-content {
@@ -117,7 +122,7 @@ ul {
   background: black;
   width: fit-content; height: fit-content;
   padding: 1px .6rem;
-  border: 1px solid #f00;
+  border: 1px solid var(--accent-color);
   display: flex;
   align-items: center;
 }
@@ -146,7 +151,7 @@ ul {
 }
 .date {
   background: black;
-  border: 1px solid #f00;
+  border: 1px solid var(--accent-color);
   padding: 3px;
   display: flex;
   flex-direction: column;
@@ -154,7 +159,7 @@ ul {
 }
 .date2 {
   background: black;
-  border: 1px solid #f00;
+  border: 1px solid var(--accent-color);
   padding: 2px;
   margin-top: 3px;
   text-align: center;
@@ -180,7 +185,7 @@ ul {
   border: 1px solid var(--seco-white);
 }
 .caracter-button {
-  color: #f00;
+  color: var(--accent-gradient);
   background: var(--main-gradient);
 	font-family: 'Monaco 9';
 	font-size: 16px;
@@ -193,7 +198,7 @@ ul {
 .caracter-button:active {
   background: var(--seco-gradient);
   color: white;
-  border-color: #f00;
+  border-color: var(--accent-gradient);
 }
 .venom {
 background: url("file:///home/pachas/venom01-dithered3.png");
@@ -262,7 +267,7 @@ bottom: 0px;
 	padding-top: 2px;
 }
 .image-contents > img {
-  border: 1px solid #f00;
+  border: 1px solid var(--accent-gradient);
   margin-left: 1px;
 }
 .level {
@@ -285,7 +290,7 @@ bottom: 0px;
   min-height: 32px;
   background: linear-gradient( white, #0000 );
   border-top: 1px solid white;
-  color: #f00;
+  color: var(--accent-gradient);
   padding: 2px;
   min-width: 195px;
   margin-top: 1px;
@@ -317,7 +322,7 @@ bottom: 0px;
 }
 .level-post {
   position: static; 
-  color: #f00;
+  color: var(--accent-gradient);
   border: 1px solid #c0c0c0;
   margin-top: 2px;
   height: min-content;
@@ -346,7 +351,7 @@ bottom: 0px;
 .mrd {
   margin: auto;
   background: var(--error-macro);
-  border: 1px solid #f00;
+  border: 1px solid var(--accent-gradient);
   margin: 1px;
   text-align: center;
   padding-right: 1px;
@@ -360,6 +365,7 @@ bottom: 0px;
 summary::marker {
   list-style: none;
   content: url("media/gentoo01.png");
+  filter: hue-rotate(90deg);
   margin-top: 2px;
 }
 details[open] summary::marker {
@@ -376,4 +382,3 @@ details[open] summary::marker {
 .notification-container {
 	scrollbar-color: transparent transparent;
 }
-

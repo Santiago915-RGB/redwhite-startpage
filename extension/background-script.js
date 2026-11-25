@@ -2,87 +2,146 @@ console.clear()
 console.log("INIT");
 console.log();
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 browser.runtime.onMessage.addListener(notify);
-var godThread = []
+var _4chanTW = []
 var dummyThread = []
-let amountOfMessages = 0;
 
 let newThreadsState = "init";
 
-function setItem() {
-  return;
+let ejstorage = {
+	name: "pachas",
+	caca: "forever"
 }
 
-function executeCase(item) {
-  return item;
-}
+browser.storage.local.set({ newThreadsState }).then(() => {return}, () => {console.log("wawawa")}); // this shit does nothing yet
 
-browser.storage.local.set({ newThreadsState }).then(setItem);
-async function notify(message){
-  switch(amountOfMessages){
-    case 0:
-	  for (var i = 0; i < message.length; i++){
-		dummyThread.push({
-		  title: null,
-		  hour: null,
-		  replies: null,
-		  nReplies: null,
-		  board: null,
-		  tContent: null,
-		  img: null
-	    })
-	  }
-	  for(let i = 0; i < message.length; i++){
-	    dummyThread[i].threadLink = `https:${message[i].substring(0, message[i].indexOf("#"))}`;
-	  }
-      amountOfMessages++;
-	break;
+// [0, 1, 2, 3]
+// 0 = file
+// 1 = 4chin
+// 2 = other
+// 3 = other
+/*
+  browser.tabs.executeScript(itid, {
+      file: "content-script.js"
+  }).then(() => {
+      //  The below should run concurrently as the update script will be waiting for it...
+    browser.tabs.sendMessage(
+      itid,
+      {
+        idx: strIndex,
+        rst: strResult
+      }
+    ).catch(onError)
+  });
+*/
 
-	case 1:
-	  for(let i = 0; i < message.length; i++){
-		dummyThread[i].nReplies = message[i];
+async function notify(message) {
+	// how shall i make it 
+	// so it can detect between site messages and local messages ? 
+
+	switch(message[0]) {
+	  case 0:
+		// send message back to content script
+		// browser.tabs.sendMessage(3, "pendejo");
+			//
+		return browser.storage.local.get("_4chanTW");
+
+
+
+
+		// local startpage code goes here
+	  break;
+      case 1:
+	    for (var i = 0; i < message[1].length; i++){
+		  dummyThread.push({
+		    title: null,
+		    hour: null,
+		    replies: null,
+		    nReplies: null,
+		    board: null,
+		    tContent: null,
+		    img: null
+	      })
+	    }
+	  for(let i = 0; i < message[1].length; i++){
+	    dummyThread[i].threadLink = `https:${message[1][i].substring(0, message[1][i].indexOf("#"))}`;
 	  }
-	  amountOfMessages++
-	break;
-	case 2:
+	  for(let i = 0; i < message[2].length; i++){
+		dummyThread[i].nReplies = message[2][i];
+	  }
+
       let threadUpdate;
       await browser.storage.local.get("newThreadsState").then(function(item) {
-		  item.newThreadsState == message.length ? threadUpdate = false : threadUpdate = true
+		  item.newThreadsState == message[3].length ? threadUpdate = false : threadUpdate = true
 	  });
 
 	  if(threadUpdate){
-	    for(let i = 0; i < message.length; i++){
-		  godThread = dummyThread;
-		  godThread[i].board = message[i];
-	    }
-	    for (let i = 0; i < message.length; i++){
-		  fetch(godThread[i].threadLink)
-		  .then(response => response.text())
- 		  .then(text => {
-		    godThread[i].replies = fetchTotalReplies(text)
-		    godThread[i].hour = fetchHour(text)
-		    godThread[i].img = fetchImage(text)
-		    godThread[i].tContent = fetchPostContent(text)
-		    godThread[i].title = fetchTitle(text)
-    	  });
-	     }
-	  setTimeout(() => {
-		const jsonBlob = new Blob(["window.tData = " + JSON.stringify(godThread, null, 2)], { type: "text/plain" });
-		const url = URL.createObjectURL(jsonBlob);
-		  console.log("ee");
+		function pururin() {
+	      for(let i = 0; i < message[3].length; i++){
+		    _4chanTW = dummyThread;
+		    _4chanTW[i].board = message[3][i];
+	      }
+	      for (let i = 0; i < message[3].length; i++){
+		  	fetch(_4chanTW[i].threadLink, {mode: 'cors'})
+		  	.then(response => response.text())
+ 		  	.then(text => {
+		    	_4chanTW[i].replies = fetchTotalReplies(text)
+		    	_4chanTW[i].hour = fetchHour(text)
+		    	_4chanTW[i].img = fetchImage(text)
+		    	_4chanTW[i].tContent = fetchPostContent(text)
+		    	_4chanTW[i].title = fetchTitle(text)
+    	  	      });
+	     	}
+		}
+		await pururin();
 
-		let downloading = browser.downloads.download({
-		  url,
-		  filename: "threads-data.js",
-		  saveAs: false,
-		  conflictAction: "overwrite" 
-	  })}, 4000)
+		browser.storage.local.set({ _4chanTW }).then(() => {console.log(_4chanTW)}, (error) => {console.log(error)}); // this shit does nothing yet
+
+
 		  dummyThread = [];
 
-	newThreadsState = message.length;  
+	newThreadsState = message[3].length;  
 	browser.storage.local.set({ newThreadsState }).then(setItem);
-
-	amountOfMessages = 0;
 }
 		  else {
 			dummyThread = [];
@@ -90,10 +149,10 @@ async function notify(message){
 			return
 		  }
 	break;
-	default:
-	break;
   }
 }
+
+/////////////// fetching  functions
 
 function fetchTotalReplies(fetchContent){
  let noCalc = fetchContent.slice(fetchContent.search("commentCount") + 23, (fetchContent.search("commentCount") + 28))
@@ -106,7 +165,7 @@ function fetchHour(fetchContent){
 		return hourMade;
 }
 
-var htmlSyms = ["&gt;", "&lt;", "&amp;", "&quot;", "&apos;", "&#039;"];
+const htmlSyms = ["&gt;", "&lt;", "&amp;", "&quot;", "&apos;", "&#039;"];
 function srchSymHTML(searchStr, str) {
     	let startIndex = 0, index, current_instances = 0, bloat = 0, instances = 0;
 
@@ -163,3 +222,16 @@ function fetchImage(fetchContent){
 
   return fileTextIndex.substring(start_pos, end_pos)
 }
+
+//////////////////////
+
+/*setTimeout(() => {
+		const jsonBlob = new Blob(["window.tData = " + JSON.stringify(_4chanTW, null, 2)], { type: "text/plain" });
+		const url = URL.createObjectURL(jsonBlob);
+
+		let downloading = browser.downloads.download({
+		  url,
+		  filename: "threads-data.js",
+		  saveAs: false,
+		  conflictAction: "overwrite" 
+	  })}, 4000)*/

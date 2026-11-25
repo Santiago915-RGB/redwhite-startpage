@@ -2,7 +2,7 @@ const threadWatch = document.getElementById("watchList");
 
 const tCount = threadWatch.querySelectorAll('li').length;
 let to = threadWatch.querySelectorAll('li');
-console.log("aa") // prints on site
+console.log("- takethreads.js -") // prints on site
 
 let lBoards = []
 let lNreplies = []
@@ -20,8 +20,10 @@ for (let i = 0; i < tCount; i++){
 	  ) : "");
 
   lPostsLinks[i] = to[i].querySelector("a").getAttribute("href");
-}																																																								// console.log(`c ${to[4].querySelector("a").className} c`);
+}																								// console.log(`c ${to[4].querySelector("a").className} c`);
 
-browser.runtime.sendMessage(lPostsLinks);
-browser.runtime.sendMessage(lNreplies);
-browser.runtime.sendMessage(lBoards);																																															// i could possibly get if someone replied to me by checking the class of a elements too
+// i could possibly get if someone replied to me by checking the class of a elements too
+
+// maybe i could make it so if the thread watcher is the same is does not execute the code at all
+//
+browser.runtime.sendMessage([1, lPostsLinks, lNreplies, lBoards ])
