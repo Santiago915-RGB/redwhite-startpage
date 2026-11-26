@@ -1,4 +1,4 @@
-console.log("M");
+// console.log("M");
 
 const kk = async () => {
   const reply = await browser.runtime.sendMessage([0])
@@ -6,6 +6,4 @@ const kk = async () => {
 	return reply;
   // window.tData = JSON.stringify(reply._4chanTW)
 }
-kk().then((x) => { window.postMessage({ type: "TO_EXT", data: x }, "*") })
-
-//window.postMessage({ type: "TO_EXT", data: "w" }, "*")
+kk().then((x) => { window.postMessage({ type: "TO_ELF", data: x }, "*") })

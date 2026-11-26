@@ -26,4 +26,5 @@ for (let i = 0; i < tCount; i++){
 
 // maybe i could make it so if the thread watcher is the same is does not execute the code at all
 //
+// console.log(lBoards)
 browser.runtime.sendMessage([1, lPostsLinks, lNreplies, lBoards ])

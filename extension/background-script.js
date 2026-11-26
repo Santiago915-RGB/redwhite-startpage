@@ -40,20 +40,10 @@ console.log();
 
 
 
-
-
 browser.runtime.onMessage.addListener(notify);
-var _4chanTW = []
-var dummyThread = []
+// let newThreadsState = { "init" };
 
-let newThreadsState = "init";
-
-let ejstorage = {
-	name: "pachas",
-	caca: "forever"
-}
-
-browser.storage.local.set({ newThreadsState }).then(() => {return}, () => {console.log("wawawa")}); // this shit does nothing yet
+// browser.storage.local.set({ newThreadsState }).then(() => {return}, () => {console.log("wawawa")}); // this shit does nothing yet
 
 // [0, 1, 2, 3]
 // 0 = file
@@ -84,16 +74,20 @@ async function notify(message) {
 		// send message back to content script
 		// browser.tabs.sendMessage(3, "pendejo");
 			//
-		return browser.storage.local.get("_4chanTW");
+			return await browser.storage.local.get("threads");
 
 
+			// ??? what are the values that signify a tw has changed ???
+			// length, replies, nreplies
 
 
 		// local startpage code goes here
 	  break;
       case 1:
-	    for (var i = 0; i < message[1].length; i++){
-		  dummyThread.push({
+		let threads = { _4chanTW: [] }
+
+	    for (let i = 0; i < message[1].length; i++){
+		  threads._4chanTW.push({
 		    title: null,
 		    hour: null,
 		    replies: null,
@@ -102,50 +96,47 @@ async function notify(message) {
 		    tContent: null,
 		    img: null
 	      })
+	    	threads._4chanTW[i].threadLink = `https:${message[1][i].substring(0, message[1][i].indexOf("#"))}`;
+			threads._4chanTW[i].nReplies = message[2][i];
+		    threads._4chanTW[i].board = message[3][i];
 	    }
-	  for(let i = 0; i < message[1].length; i++){
-	    dummyThread[i].threadLink = `https:${message[1][i].substring(0, message[1][i].indexOf("#"))}`;
-	  }
-	  for(let i = 0; i < message[2].length; i++){
-		dummyThread[i].nReplies = message[2][i];
-	  }
 
-      let threadUpdate;
-      await browser.storage.local.get("newThreadsState").then(function(item) {
-		  item.newThreadsState == message[3].length ? threadUpdate = false : threadUpdate = true
-	  });
+      const threadUpdate = true //await browser.storage.local.get("threads").then((x) => { return x.threads._4chanTW.length == threads._4chanTW.length ? true : true });
 
 	  if(threadUpdate){
-		function pururin() {
-	      for(let i = 0; i < message[3].length; i++){
-		    _4chanTW = dummyThread;
-		    _4chanTW[i].board = message[3][i];
-	      }
+
 	      for (let i = 0; i < message[3].length; i++){
-		  	fetch(_4chanTW[i].threadLink, {mode: 'cors'})
+
+		  	await fetch(threads._4chanTW[i].threadLink, {mode: 'cors'})
 		  	.then(response => response.text())
  		  	.then(text => {
-		    	_4chanTW[i].replies = fetchTotalReplies(text)
-		    	_4chanTW[i].hour = fetchHour(text)
-		    	_4chanTW[i].img = fetchImage(text)
-		    	_4chanTW[i].tContent = fetchPostContent(text)
-		    	_4chanTW[i].title = fetchTitle(text)
-    	  	      });
-	     	}
-		}
-		await pururin();
+		    	threads._4chanTW[i].replies = fetchTotalReplies(text)
+		    	threads._4chanTW[i].hour = fetchHour(text)
+		    	threads._4chanTW[i].img = fetchImage(text)
+		    	threads._4chanTW[i].tContent = fetchPostContent(text)
+		    	threads._4chanTW[i].title = fetchTitle(text)
+    	  	});
+	      }
+		  browser.storage.local.set( { threads } );
+		  console.log( await browser.storage.local.get("threads") );
 
-		browser.storage.local.set({ _4chanTW }).then(() => {console.log(_4chanTW)}, (error) => {console.log(error)}); // this shit does nothing yet
+		//console.log(threads._4chanTW);
+		// what i will do next is fetching the threads object and
 
 
-		  dummyThread = [];
 
-	newThreadsState = message[3].length;  
-	browser.storage.local.set({ newThreadsState }).then(setItem);
+
+		// browser.storage.local.set({ threads }).then((x) => return, (error) => {console.log(error)}); // this shit does nothing yet
+		//console.log(await browser.storage.local.get("threads"));
+		
+
+	//threads.
+		//threads._4chanTW = []; // look at this later
+		// newThreadsState = message[1].length;  
+
+	// browser.storage.local.set({ newThreadsState }).then(setItem);
 }
 		  else {
-			dummyThread = [];
-			amountOfMessages = 0;
 			return
 		  }
 	break;
@@ -156,8 +147,8 @@ async function notify(message) {
 
 function fetchTotalReplies(fetchContent){
  let noCalc = fetchContent.slice(fetchContent.search("commentCount") + 23, (fetchContent.search("commentCount") + 28))
-		var start_pos = noCalc.indexOf(`"`) + 1;
-		var end_pos = noCalc.indexOf(`"`, start_pos);
+		let start_pos = noCalc.indexOf(`"`) + 1;
+		let end_pos = noCalc.indexOf(`"`, start_pos);
 		return noCalc.substring(start_pos,(end_pos - 2)); 
 }
 function fetchHour(fetchContent){
@@ -217,8 +208,8 @@ function fetchPostContent(fetchContent){
 
 function fetchImage(fetchContent){
   let fileTextIndex = fetchContent.slice(fetchContent.search("fileText") + 12, (fetchContent.indexOf("KB,") - 6)) 
-  var start_pos = fileTextIndex.indexOf(`href=`) + 8;
-  var end_pos = fileTextIndex.indexOf(`"`, start_pos);
+  let start_pos = fileTextIndex.indexOf(`href=`) + 8;
+  let end_pos = fileTextIndex.indexOf(`"`, start_pos);
 
   return fileTextIndex.substring(start_pos, end_pos)
 }
@@ -226,7 +217,7 @@ function fetchImage(fetchContent){
 //////////////////////
 
 /*setTimeout(() => {
-		const jsonBlob = new Blob(["window.tData = " + JSON.stringify(_4chanTW, null, 2)], { type: "text/plain" });
+		const jsonBlob = new Blob(["window.tData = " + JSON.stringify(threads._4chanTW, null, 2)], { type: "text/plain" });
 		const url = URL.createObjectURL(jsonBlob);
 
 		let downloading = browser.downloads.download({
