@@ -28,8 +28,6 @@
   --secondary: linear-gradient(
   to left, rgb(calc(var(--testvalue) + 13), calc(var(--testvalue) + 13), calc(var(--testvalue) + 13)), rgb(calc(var(--testvalue) + 13 - 64), calc(var(--testvalue) + 13 - 64), calc(var(--testvalue) + 13 - 64)));
 
-
-
   --tertiary: linear-gradient(to left, rgb(var(--testvalue), var(--testvalue), var(--testvalue)), rgb(calc(var(--testvalue) - 64), calc(var(--testvalue) - 64), calc(var(--testvalue) - 64)));
 
 

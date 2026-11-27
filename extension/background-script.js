@@ -31,15 +31,6 @@ console.log();
 
 
 
-
-
-
-
-
-
-
-
-
 browser.runtime.onMessage.addListener(notify);
 
 // [0, 1, 2, 3]
@@ -71,12 +62,7 @@ async function notify(message) {
 		    threads._4chanTW[i].board = message[3][i];
 	    }
 
-      const threadUpdate = true //await browser.storage.local.get("threads").then((x) => { return x.threads._4chanTW.length == threads._4chanTW.length ? true : true });
-
-	  if(threadUpdate){
-
 	      for (let i = 0; i < message[3].length; i++){
-
 		  	await fetch(threads._4chanTW[i].threadLink, {mode: 'cors'})
 		  	.then(response => response.text())
  		  	.then(text => {
@@ -105,10 +91,6 @@ async function notify(message) {
 		// newThreadsState = message[1].length;  
 
 	// browser.storage.local.set({ newThreadsState }).then(setItem);
-}
-		  else {
-			return
-		  }
 	break;
   }
 }
@@ -148,6 +130,8 @@ function fetchTitle(fetchContent){
  let noCalc = fetchContent.slice(fetchContent.search('itemprop="headline">') + 20, fetchContent.indexOf('</span> <span class="nameBlock"'))
 
 	if (noCalc.search("<head><meta charset") > -1) return "";
+    
+	return noCalc;
 
 	if (noCalc.length - srchSymHTML(htmlSyms, noCalc) > 24){
 		return `${noCalc.slice(0, 20).replace(/\s+$/, '')}...`
