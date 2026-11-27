@@ -1,16 +1,37 @@
-const threadWatch = document.getElementById("watchList");
+// browser.storage.local.get("")
 
-const tCount = threadWatch.querySelectorAll('li').length;
+var threadWatch = document.getElementById("watchList");
+
+const observer = new MutationObserver((e) => {
+	if (e[0].addedNodes.length != e[0].removedNodes.length) {
+		console.log("added or removed") 
+	}
+	else {
+		let sameThreads = true;
+		for (let i = 0; i < e[0].addedNodes.length; ++i) {
+			if (e[0].addedNodes[i].innerHTML != e[0].removedNodes[i].innerHTML) { sameThreads = false; return }
+		}
+		!sameThreads && threadMessage();
+	}
+});
+
+observer.observe(threadWatch, {
+  subtree: true,
+  childList: true,
+});
+
+
+
+function threadMessage() {
 let to = threadWatch.querySelectorAll('li');
-console.log("- takethreads.js -") // prints on site
 
 let lBoards = []
 let lNreplies = []
 let lPostsLinks = []
 
-let threads = [tCount];
+let threads = [to.length];
 
-for (let i = 0; i < tCount; i++){
+for (let i = 0; i < to.length; i++){
   lBoards[i] = `/${to[i].querySelector("span").getAttribute("data-board")}/`
 
   lNreplies[i] = (
@@ -20,11 +41,14 @@ for (let i = 0; i < tCount; i++){
 	  ) : "");
 
   lPostsLinks[i] = to[i].querySelector("a").getAttribute("href");
-}																								// console.log(`c ${to[4].querySelector("a").className} c`);
+}
 
-// i could possibly get if someone replied to me by checking the class of a elements too
+// browser.runtime.sendMessage([1, lPostsLinks, lNreplies, lBoards])
+}
 
-// maybe i could make it so if the thread watcher is the same is does not execute the code at all
-//
-// console.log(lBoards)
-browser.runtime.sendMessage([1, lPostsLinks, lNreplies, lBoards ])
+
+
+
+// console.log("- takethreads.js -") // prints on site
+// what are the triggers of this function???
+// enter site true, remove thread false, click twPruen ADD DOM

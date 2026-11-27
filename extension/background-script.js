@@ -41,48 +41,18 @@ console.log();
 
 
 browser.runtime.onMessage.addListener(notify);
-// let newThreadsState = { "init" };
-
-// browser.storage.local.set({ newThreadsState }).then(() => {return}, () => {console.log("wawawa")}); // this shit does nothing yet
 
 // [0, 1, 2, 3]
 // 0 = file
 // 1 = 4chin
 // 2 = other
 // 3 = other
-/*
-  browser.tabs.executeScript(itid, {
-      file: "content-script.js"
-  }).then(() => {
-      //  The below should run concurrently as the update script will be waiting for it...
-    browser.tabs.sendMessage(
-      itid,
-      {
-        idx: strIndex,
-        rst: strResult
-      }
-    ).catch(onError)
-  });
-*/
 
 async function notify(message) {
-	// how shall i make it 
-	// so it can detect between site messages and local messages ? 
-
 	switch(message[0]) {
 	  case 0:
-		// send message back to content script
-		// browser.tabs.sendMessage(3, "pendejo");
-			//
 			return await browser.storage.local.get("threads");
-
-
-			// ??? what are the values that signify a tw has changed ???
-			// length, replies, nreplies
-
-
-		// local startpage code goes here
-	  break;
+	  		break;
       case 1:
 		let threads = { _4chanTW: [] }
 
